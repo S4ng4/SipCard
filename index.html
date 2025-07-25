@@ -1,153 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SipCard Features</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --antique-gold: #C5A258;
-      --soft-gold: #E8D9B5;
-      --deep-bordeaux: #6A0F3A;
-      --ivory: #F8F5F0;
-      --charcoal: #1E1E1E;
-      --serif-font: 'Cormorant Garamond', serif;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SipCard by SipTag | Free Digital Wine Cards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Refined Color Palette */
+            --antique-gold: #C5A258;
+            --soft-gold: #E8D9B5;
+            --deep-bordeaux: #6A0F3A;
+            --ivory: #F8F5F0;
+            --charcoal: #1E1E1E;
+            
+            /* Typography */
+            --serif-font: 'Cormorant Garamond', serif;
+            --sans-font: 'Montserrat', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--charcoal);
+            color: var(--ivory);
+            font-family: var(--serif-font);
+            line-height: 1.7;
+        }
+
+        /* --- Header --- */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.95);
+            padding: 1rem 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(197, 162, 88, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 70px;
+            border-radius: 8px;
+        }
+
+        .nav a {
+            color: var(--ivory);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-family: var(--sans-font);
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: var(--antique-gold);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(rgba(30, 30, 30, 0.9), rgba(30, 30, 30, 0.9)), 
+                        url('wine-background.jpg') center/cover;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            padding-right: 2rem;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--ivory);
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            color: var(--soft-gold);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .tagline {
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--deep-bordeaux);
+            color: var(--ivory);
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: var(--sans-font);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .button:hover {
+            background: #7C1A4B;
+            transform: translateY(-2px);
+        }
+
+        .button-outline {
+            background: transparent;
+            border: 1px solid var(--antique-gold);
+            color: var(--antique-gold);
+        }
+
+        /* --- Two Column Sections --- */
+        .two-column {
+            padding: 6rem 0;
+        }
+
+        .column-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .column-text {
+            padding: 2rem;
+        }
+
+        .column-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .column-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Alternate layout for even sections */
+        .two-column:nth-child(even) .column-container {
+            direction: rtl; /* This flips the order */
+        }
+
+        .two-column:nth-child(even) .column-text {
+            direction: ltr; /* Reset text direction */
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--ivory);
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: var(--antique-gold);
+            margin-top: 1rem;
+        }
+
+        /* --- SipCard Types --- */
+        .card-types {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, var(--charcoal), #2A2A2A);
+            text-align: center;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card-type {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(40, 40, 40, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card-type:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-image {
+            height: 200px;
+            background: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ivory);
+            font-size: 1.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content h3 {
+            color: var(--antique-gold);
+            margin-bottom: 1rem;
+        }
+
+        .card-content ul {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .card-content li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .card-content li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--antique-gold);
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: var(--soft-gold);
+            font-style: italic;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(197, 162, 88, 0.3);
+        }
+
+        /* --- CTA Section --- */
+        .cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            background: linear-gradient(rgba(106, 15, 58, 0.9), rgba(106, 15, 58, 0.9)), 
+                        url('wine-cta.jpg') center/cover;
+        }
+
+        
+        .gold-text {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(90deg, #E8D9B5, #C5A258, #E8D9B5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        font-weight: 600;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      background-color: var(--charcoal);
-      color: var(--ivory);
-      font-family: var(--serif-font);
-      line-height: 1.7;
-      
-    }
-    h1 {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 2.5rem;
-      color: var(--soft-gold);
-    }
-    .features-section {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-    .feature-group {
-      margin-bottom: 4rem;
-    }
-    .feature-group h2 {
-      color: var(--antique-gold);
-      font-size: 1.9rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    .feature:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-      transform: translateY(-2px);
-    }
-    .feature h3 {
-      font-size: 1.4rem;
-      margin: 0.2rem 0 0.8rem;
-      color: var(--ivory);
-      letter-spacing: 0.3px;
-    }
-    .feature p {
-      font-family: var(--sans-font);
-      font-size: 1rem;
-      color: var(--soft-gold);
-    }
-    .footer-logo {
-      display: block;
-      margin: 3rem auto 1.5rem;
-      height: 140px;
-      border-radius: 8px;
-    }
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.85rem;
-      color: rgba(248, 245, 240, 0.6);
-      font-family: var(--sans-font);
-      padding: 1rem;
-    }
-  </style>
+
+        /* --- Footer --- */
+        .footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            background: #2A2A2A;
+        }
+
+        .footer-logo {
+            height: 70px;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+            border-radius: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--ivory);
+            text-decoration: none;
+            font-family: var(--sans-font);
+            font-size: 0.9rem;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: rgba(248, 245, 240, 0.6);
+        }
+
+        /* Image troubleshooting styles */
+        .image-troubleshooting {
+            background: rgba(106, 15, 58, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+        
+        .image-troubleshooting h4 {
+            color: var(--antique-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .hero-content,
+            .column-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-text,
+            .column-text {
+                padding-right: 0;
+                text-align: center;
+            }
+            
+            .two-column:nth-child(even) .column-container {
+                direction: ltr;
+            }
+            
+            .button {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .button {
+                display: block;
+                margin: 0.5rem auto;
+                max-width: 250px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="#">
+                <!-- Changed to SipTagBlack.png as you specified -->
+                <img src="SipTagBlack.png" alt="SipCard Logo" class="logo" onerror="this.onerror=null;this.src='placeholder-image.png';">
+            </a>
+            <nav class="nav">
+                <a href="features.html">Features</a>
+                <a href="#cards">SipCards</a>
+                <a href="SipCard.html">Get Started</a>
+            </nav>
+        </div>
+    </header>
 
-  <h1>SipCard Features</h1>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Professional Wine Card Template – Free & Fully Editable</h1>
+                <h2>Transform how you present and sell your wines</h2>
+                <p class="tagline">
+                    SipCards help you showcase your wines with elegance and professionalism. 
+                    Create your free digital wine card today and elevate your brand.
+                </p>
+                <div>
+                    <a href="SipCard.html" class="button">Create Free SipCard</a>
+                    <a href="LearnMore.html" class="button button-outline">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <!-- Changed to SipTagBlack.png as you specified -->
+                <img src="tabletShelf.png" alt="SipCard Example" onerror="this.onerror=null;this.src='placeholder-image.png';">
+            </div>
+        </div>
+    </section>
 
-  <section class="features-section">
-    <div class="feature-group">
-      <h2>SipCard – Simple, Educational, Empowering</h2>
+    <!-- Features Section -->
+    <section class="two-column" id="features">
+        <div class="container column-container">
+            <div class="column-text">
+                <h2 class="section-title" >SipCard Pro Designed for Winemakers & Resellers</h2>
+                <p>Designed for professionals to present wines through elegantly crafted cards that capture their unique character.
+                	<li><strong>Complete Technical Overview:</strong> From analytical data to vineyard practices.</li>
+    <li><strong>Organoleptic Profile:</strong> Clear visual and aromatic charts for expert analysis.</li>
+    <li><strong>Commercial Insights:</strong> Bottle size, cellarability, certifications, and more.</li>
+    
+                <p>Every element is customizable - from charts to the detailed tasting notes that tell your wine's story.</p>
+                
+                
+                <!-- Image troubleshooting help -->
+            </div>
+            <div class="column-image">
+                <!-- Changed to wine_technical_sheet.png as you specified -->
+                <img src="wineMakerFinal.png" alt="Wine Presentation Example" onerror="this.onerror=null;this.src='placeholder-image.png';">
+            </div>
+        </div>
+    </section>
 
-      <div class="feature">
-        <h3>One Tap Access</h3>
-        <p>Each card connects to a digital wine profile with one tap — no apps needed.</p>
-      </div>
+    <!-- Second Feature Section -->
+    <section class="two-column">
+        <div class="container column-container">
+            <div class="column-text">
+                <h2 class="section-title">Always Up-to-Date</h2>
+                <p>Never worry about outdated information. Update your wine details anytime.</p>
+                <p>Our system maintains version control so you can make changes and ensure everyone has access to the most current information about your wines.</p>
+               
+            </div>
+            <div class="column-image">
+                <!-- Placeholder for update-example.png -->
+                <img src="PcTablet.png" alt="Update Example" onerror="this.onerror=null;this.src='placeholder-image.png';">
+            </div>
+        </div>
+    </section>
 
-      <div class="feature">
-        <h3>Customizable Cards</h3>
-        <p>Include tasting notes, producer info, grape details, food pairings, and more.</p>
-      </div>
+    <!-- SipCard Types Section -->
+    <section class="card-types" id="cards">
+        <div class="container">
+            <h2 class="section-title">Choose Your SipCard</h2>
+            <div class="cards-container">
+                <!-- Free Basic SipCard -->
+                <div class="card-type">
+                    <div class="card-image" style="background: #5A5A5A;">
+                        Basic SipCard
+                    </div>
+                    <div class="card-content">
+                        <h3>Free SipCard</h3>
+                        <p>Perfect for wine enthusiasts and small producers:</p>
+                        <ul>
+                            <li>Custom wine profile</li>
+                            <li>Tasting notes</li>
+                            <li>Food pairing suggestions</li>
+                            <li>Basic analytics</li>
+                            <li>Free</li>
+                        </ul>
+                        <a href="SipCard.html" class="button">Get Started Free</a>
+                    </div>
+                </div>
 
-      <div class="feature">
-        <h3>Empowers Guests</h3>
-        <p>Helps people choose wine confidently — even without sommelier knowledge.</p>
-      </div>
+                <!-- Wine Maker SipCard -->
+                <div class="card-type">
+                    <div class="card-image" style="background: var(--deep-bordeaux);">
+                        Wine Maker SipCard
+                    </div>
+                    <div class="card-content">
+                        <h3>SipCard Pro</h3>
+                        <p>Everything a professional producer or reseller needs:</p>
+                        <ul>
+                            <li>All Basic features plus:</li>
+                            <li>Vintage-specific details</li>
+                            <li>Technical specifications</li>
+                            <li>Vineyard stories</li>
+                            <li>Advanced analytics</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <div class="note">
+                            Currently available for testing to just 2 producers. 
+                            I'd love your feedback on how to improve this card for professionals.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <div class="feature">
-        <h3>Supports Staff Learning</h3>
-        <p>A resource for your team to better understand and present each wine.</p>
-      </div>
-
-      <div class="feature">
-        <h3>Lightweight and Flexible</h3>
-        <p>Use it in print, on your website, or linked to NFC cards at the table.</p>
-      </div>
+    <!-- CTA Section -->
+    <section class="cta" id="cta" style="position: relative; background: url('brindisi.png') center/cover no-repeat; color: var(--ivory);">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 30, 30, 0.7); z-index: 1;"></div>
+    <div class="container" style="position: relative; z-index: 2; text-align: center; padding: 6rem 2rem;">
+        <h2 class="gold-text">Ready to Transform Your Wine Presentation?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">Elevate your brand with SipCard.</p>
+        <a href="#demo-form" class="button">Create Your Free SipCard Now</a>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">No credit card required</p>
+        <h2 class="gold-text">asangalli01@gmail.com</h2>
     </div>
+</section>
 
-    <div class="feature-group">
-      <h2>SipTag – The Natural Evolution (coming soon)</h2>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <!-- Changed to logo-white.png -->
+            <img src="SipTagBlack.png" alt="SipCard Logo" class="footer-logo" onerror="this.onerror=null;this.src='SipTagBlack.png';">
+            <div class="footer-links">
+            <p class="footer-copyright">© 2023 SipCard by SipTag. All rights reserved.</p>
+        </div>
+    </footer>
 
-      <div class="feature">
-        <h3>One Tap Access</h3>
-        <p>Each card connects to a digital wine profile with one tap — no apps needed.</p>
-      </div>
-
-      <div class="feature">
-        <h3>NFC-Ready</h3>
-        <p>Advanced version using embedded NFC chips for smart interaction and traceability.</p>
-      </div>
-
-      <div class="feature">
-        <h3>Inventory Meets Emotion</h3>
-        <p>Combines technical data (vintage, origin, availability) with storytelling and emotion.</p>
-      </div>
-
-      <div class="feature">
-        <h3>Sustainable & Scalable</h3>
-        <p>Reusable smart cards can live in the venue and update over time.</p>
-      </div>
-
-      <div class="feature">
-        <h3>Built for the Future</h3>
-        <p>Ideal for premium wine lists, tasting rooms, and collector experiences.</p>
-      </div>
-    </div>
-
-    <img src="SipTagBlack.png" alt="SipTag Logo" class="footer-logo" onerror="this.onerror=null;this.src='SipTagBlack.png';" />
-  </section>
-
-  <footer>
-    &copy; 2025 SipCard / SipTag. All rights reserved.
-  </footer>
-
+    <!-- JavaScript for image troubleshooting -->
+    <script>
+        // This will log any images that failed to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    console.error('Image failed to load:', this.src);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-
 
