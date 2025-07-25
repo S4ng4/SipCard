@@ -1,0 +1,165 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SipCard – Helping Wines Speak</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --antique-gold: #C5A258;
+      --soft-gold: #E8D9B5;
+      --deep-bordeaux: #6A0F3A;
+      --ivory: #F8F5F0;
+      --charcoal: #1E1E1E;
+      --serif-font: 'Cormorant Garamond', serif;
+      --sans-font: 'Montserrat', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--charcoal);
+      color: var(--ivory);
+      font-family: var(--serif-font);
+      line-height: 1.7;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background: linear-gradient(rgba(30,30,30,0.9), rgba(30,30,30,0.9)), url('wine-background.jpg') center/cover;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      color: var(--soft-gold);
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin: 1.5rem 0;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .button-group {
+      margin-top: 2rem;
+    }
+    .button {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      margin: 0.5rem;
+      background: var(--deep-bordeaux);
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: var(--sans-font);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .button:hover {
+      background: #7C1A4B;
+    }
+    .section {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+    .section h2 {
+      color: var(--antique-gold);
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .section p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    .quote {
+      font-style: italic;
+      color: var(--soft-gold);
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .final {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(rgba(106,15,58,0.9), rgba(106,15,58,0.9)), url('wine-cta.jpg') center/cover;
+    }
+    .gold-text {
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(90deg, #E8D9B5, #C5A258, #E8D9B5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      font-weight: 600;
+    }
+    footer {
+      text-align: center;
+      font-family: var(--sans-font);
+      font-size: 0.85rem;
+      color: rgba(248, 245, 240, 0.6);
+      padding: 2rem;
+    }
+    footer img {
+      height: 140px;
+      margin: 1rem auto;
+      display: block;
+    }
+    footer a {
+      color: var(--ivory);
+      text-decoration: none;
+      margin: 0 0.5rem;
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .section h2 { font-size: 1.5rem; }
+      .gold-text { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div>
+      <img src="SipTagBlack.png" alt="SipTag Logo" style="height: 140px; opacity: 0.7;" />
+      <h1>A SipCard for Everyone</h1>
+      <p>Helping Wines Speak for Themselves<br/>Born in the dining room, designed for every table – SipCard helps staff, guests, and wine lovers understand and enjoy wine without pressure or pretense.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>The Problem I Faced</h2>
+    <p>Before working on SipCard, I spent years in hospitality – first as a dining consultant and then as a manager. I often saw guests hesitate when looking at the wine list. Not because they lacked interest – but because they lacked information. Even passionate staff sometimes struggled to tell the right story at the right moment.</p>
+    <p>It was never about selling more bottles. It was about helping people feel confident, curious, and understood when choosing wine.</p>
+  </section>
+
+  <section class="section">
+    <h2>The Birth of SipCard</h2>
+    <p>SipCard started as a personal solution. I needed a way to let wine speak for itself – no pressure, no confusion, just clarity. Each card connects to a digital wine profile: grapes, producer, food pairings, tasting notes, serving suggestions – everything in one place, one tap away.</p>
+    <p>With SipCard, your team gains a new ally – and your guests feel empowered to explore. That changed everything.</p>
+  </section>
+
+  <section class="section">
+    <h2>Designed for Learning First</h2>
+    <p>Before boosting sales, SipCard aimed to support education. For staff who want to deepen their knowledge. For customers who love to learn. For producers who want their work to be understood and valued.</p>
+    <p>Wine is culture. SipCard is a simple tool to help share it – one card at a time.</p>
+  </section>
+
+  <section class="section">
+    <h2>From Simplicity to Innovation</h2>
+    <p>After seeing how SipCard made a difference, I realized there was more we could do. Helping guests discover wine is great – but what if we could go deeper? Into transparency, authenticity, and emotional connection?</p>
+    <p>That’s when the idea of SipTag came to life – the natural evolution of the project. Built with NFC technology, designed for smart inventory, traceability, and storytelling at scale. Imagine an elegant card next to a bottle: the guest taps their phone, and all the information appears – like magic.</p>
+    <h2 style="text-align: center; color: var(--soft-gold); margin-top: 2rem;">Low Tech, High Impact. Tap into the future.</h2>
+  </section>
+
+  <section class="final">
+    <div class="gold-text">SipCard was born from the floor of a restaurant – and built for every table</div>
+    <p>No matter if you're a sommelier, server, winemaker, or simply curious – SipCard exists to help wine become more accessible, more engaging, and more human.</p>
+  </section>
+
+  <footer>
+    <img src="SipTagBlack.png" alt="SipTag Logo" />
+    <div>&copy; 2025 SipCard / SipTag. All rights reserved.</div>
+  </footer>
+</body>
+</html>
