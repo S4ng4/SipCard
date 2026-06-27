@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wine Card Generator - Create Your Custom Wine Card</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             /* Default Red Wine Theme */
@@ -53,6 +54,11 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+        }
+
+        .edit-controls button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .edit-btn {
@@ -456,6 +462,35 @@
         .edit-mode-indicator.active {
             display: block;
         }
+
+        /* Toast feedback while the PDF is being generated */
+        .pdf-toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--dark-color);
+            color: var(--accent-color);
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-family: 'Garamond', serif;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .pdf-toast.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .pdf-toast.error {
+            background: #7a1f1f;
+            color: #fff;
+        }
         
         /* Media queries for mobile version - REVISED */
         @media (max-width: 768px) {
@@ -569,9 +604,11 @@
    <div class="edit-controls">
         <button class="edit-btn" onclick="toggleEditMode()">✏️ Edit Mode -First Step- </button>
         <button class="save-btn" onclick="saveChanges()" style="display: none;">💾 Save -Second Step- </button>
-        <button class="download-btn" onclick="downloadCard()">📸 Download -Third Step- </button>
+        <button class="download-btn" id="downloadPdfBtn" onclick="downloadCardAsPDF()">📄 Download PDF -Third Step- </button>
         <button class="edit-btn" onclick="resetToDefault()" style="background: #8b4513;">🔄 Reset</button>
     </div>
+
+    <div class="pdf-toast" id="pdfToast"></div>
     
     <div class="edit-mode-indicator" id="editIndicator">
         ✏️ Edit Mode Active - Click on any text to edit
@@ -1008,66 +1045,154 @@
             }
         }
 
-        // Function to download the wine card as an image
-        async function downloadCard() {
+        // Small helper to show a status message above the download button
+        function showPdfToast(message, isError) {
+            const toast = document.getElementById('pdfToast');
+            toast.textContent = message;
+            toast.classList.toggle('error', !!isError);
+            toast.classList.add('visible');
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3500);
+        }
+
+        // Function to download the wine card as a multi-page PDF
+        async function downloadCardAsPDF() {
             const cardElement = document.getElementById('wineCard');
             const editControls = document.querySelector('.edit-controls');
             const editIndicator = document.getElementById('editIndicator');
+            const downloadBtn = document.getElementById('downloadPdfBtn');
             const wasInEditMode = editMode;
 
-            // Define target desktop width (e.g., the max-width of .content)
-            const targetDesktopWidth = 1000; // This should match your .content max-width in CSS
+            // Target desktop width so the PDF always reflects the "full" layout,
+            // regardless of the screen size used to generate it (important on mobile).
+            const targetDesktopWidth = 1000; // matches .content max-width in CSS
 
-            // Store original styles
             const originalStyle = {
                 maxWidth: cardElement.style.maxWidth,
                 width: cardElement.style.width,
-                boxSizing: cardElement.style.boxSizing, // Important for consistent width calculation
-                padding: cardElement.style.padding // Preserve padding
+                boxSizing: cardElement.style.boxSizing,
+                padding: cardElement.style.padding
             };
 
-            // Temporarily hide controls and exit edit mode for a clean screenshot
+            // Clean up the screenshot: exit edit mode and hide UI chrome
             if (wasInEditMode) {
                 toggleEditMode();
             }
             editControls.style.display = 'none';
-            editIndicator.style.display = 'none'; // Also hide the edit mode indicator
+            editIndicator.style.display = 'none';
 
-            // Apply temporary styles for consistent desktop capture
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = '⏳ Generating PDF...';
+            showPdfToast('Generating your PDF, please wait...', false);
+
+            // Force the desktop layout for a consistent capture
             cardElement.style.maxWidth = `${targetDesktopWidth}px`;
             cardElement.style.width = `${targetDesktopWidth}px`;
-            cardElement.style.boxSizing = 'border-box'; // Ensure padding is included in the width calculation
+            cardElement.style.boxSizing = 'border-box';
 
-            // Wait a moment for styles to apply (optional, but can help with rendering)
-            await new Promise(resolve => setTimeout(resolve, 50)); 
+            // Let the layout settle before capturing
+            await new Promise(resolve => setTimeout(resolve, 80));
 
             try {
+                if (typeof html2canvas !== 'function') {
+                    throw new Error('html2canvas non è disponibile (controlla la connessione).');
+                }
+                if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function') {
+                    throw new Error('jsPDF non è disponibile (controlla la connessione).');
+                }
+
                 const canvas = await html2canvas(cardElement, {
-                    scale: 2, // Capture at 2x resolution for sharpness
+                    scale: 2,
                     useCORS: true,
-                    logging: true,
-                    allowTaint: true
+                    logging: false,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
                 });
 
-                const link = document.createElement('a');
-                link.download = 'wine-card.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+                const imgData = canvas.toDataURL('image/png');
+
+                // Build an A4 PDF, splitting the captured image across as many
+                // pages as needed so nothing gets cropped on long cards.
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const margin = 8; // mm of white margin on each side
+                const usableWidth = pageWidth - margin * 2;
+                const usableHeight = pageHeight - margin * 2;
+
+                // Scale factor from canvas pixels to mm at the usable width
+                const pxToMm = usableWidth / canvas.width;
+                const fullImageHeightMm = canvas.height * pxToMm;
+
+                if (fullImageHeightMm <= usableHeight) {
+                    // Fits on a single page
+                    pdf.addImage(imgData, 'PNG', margin, margin, usableWidth, fullImageHeightMm);
+                } else {
+                    // Slice the canvas into page-sized chunks (in source pixels)
+                    const pageHeightPx = Math.floor(usableHeight / pxToMm);
+                    let renderedPx = 0;
+                    let firstPage = true;
+
+                    while (renderedPx < canvas.height) {
+                        const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedPx);
+
+                        const pageCanvas = document.createElement('canvas');
+                        pageCanvas.width = canvas.width;
+                        pageCanvas.height = sliceHeightPx;
+                        const ctx = pageCanvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                        ctx.drawImage(
+                            canvas,
+                            0, renderedPx, canvas.width, sliceHeightPx,
+                            0, 0, canvas.width, sliceHeightPx
+                        );
+
+                        const sliceData = pageCanvas.toDataURL('image/png');
+                        const sliceHeightMm = sliceHeightPx * pxToMm;
+
+                        if (!firstPage) {
+                            pdf.addPage();
+                        }
+                        pdf.addImage(sliceData, 'PNG', margin, margin, usableWidth, sliceHeightMm);
+
+                        renderedPx += sliceHeightPx;
+                        firstPage = false;
+                    }
+                }
+
+                const wineNameField = document.querySelector('[data-field="fullWineName"]');
+                const rawName = wineNameField ? wineNameField.textContent.trim() : 'wine-card';
+                const safeName = rawName.replace(/[^a-z0-9\-\_]+/gi, '-').replace(/^-+|-+$/g, '') || 'wine-card';
+
+                pdf.save(`${safeName}.pdf`);
+                showPdfToast('PDF scaricato ✅', false);
             } catch (error) {
-                console.error("Error generating image:", error);
+                console.error('Error generating PDF:', error);
+                showPdfToast('Errore nella generazione del PDF. Riprova.', true);
             } finally {
-                // Restore original styles
+                // Restore original styles and UI
                 cardElement.style.maxWidth = originalStyle.maxWidth;
                 cardElement.style.width = originalStyle.width;
                 cardElement.style.boxSizing = originalStyle.boxSizing;
-                cardElement.style.padding = originalStyle.padding; // Restore padding
+                cardElement.style.padding = originalStyle.padding;
 
-                // Restore controls and re-enter edit mode if it was active
                 editControls.style.display = 'flex';
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = '📄 Download PDF -Third Step- ';
+
                 if (wasInEditMode) {
-                    toggleEditMode(); // This will show editIndicator again if needed
+                    toggleEditMode();
                 } else {
-                    editIndicator.style.display = 'none'; // Ensure it remains hidden if not in edit mode
+                    editIndicator.style.display = 'none';
                 }
             }
         }
