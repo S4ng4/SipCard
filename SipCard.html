@@ -1103,12 +1103,23 @@
                     throw new Error('jsPDF non è disponibile (controlla la connessione).');
                 }
 
+                // Fixed output resolution: 2px of canvas per 1px of layout,
+                // regardless of the host browser's devicePixelRatio or zoom.
+                // windowWidth/windowHeight pin the layout viewport html2canvas
+                // uses, so the same HTML always renders at the same pixel
+                // size whether opened locally, on GitHub Pages, or on mobile.
+                const FIXED_RENDER_SCALE = 2;
+                const renderWidth = cardElement.scrollWidth;
+                const renderHeight = cardElement.scrollHeight;
+
                 const canvas = await html2canvas(cardElement, {
-                    scale: 2,
+                    scale: FIXED_RENDER_SCALE,
                     useCORS: true,
                     logging: false,
                     allowTaint: true,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    windowWidth: renderWidth,
+                    windowHeight: renderHeight
                 });
 
                 const imgData = canvas.toDataURL('image/png');
